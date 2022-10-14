@@ -55,6 +55,34 @@ Within the tidied data set the key variables are week, day_id, day, minutes, cou
 
 Creating a table showing total activity for each day 
 
+```{r}
+accel_tidy %>% 
+  group_by(day) %>% 
+  summarize(total_activity= sum(count, na.rm=TRUE)) %>% 
+  knitr::kable(caption= "Total Activity by Day")
+```
+
+From this table one trend that can be seen is how Wednesday through Friday, the later half of the week, has a higher activity count than the weekend, which Saturday has the lowest activity count. 
+
+
+Creating a single panel plot 
+
+```{r}
+accel_tidy %>% 
+  group_by(day, time) %>% 
+  ggplot(aes(x=time, y=count, color=day), alpha= 0.5) +
+  geom_point() + 
+  theme(legend.position= "bottom") +
+  labs(
+    title= "24-hour Activity Time Courses for Each Day", 
+    x= "hour in the day", 
+    y= "count (min)",
+    caption= "Data from Columbia University Medical Center"
+  )
+```
+
+
+
 
 
 
