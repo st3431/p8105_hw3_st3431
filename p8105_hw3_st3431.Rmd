@@ -1,0 +1,62 @@
+---
+title: "p8105_hw3_st3431"
+output: github_document
+date: "2022-10-14"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+```
+
+## Problem 2
+```{r}
+accel_df= read_csv("hw3_data/accel_data.csv") %>% 
+  janitor::clean_names()
+```
+
+```{r}
+accel_tidy= 
+  accel_df %>% 
+  pivot_longer(
+    activity_1:activity_1440, 
+    names_to = "minutes",
+    values_to= "count"
+  ) %>% 
+  separate(minutes, into=c("delete", "time")) %>% 
+  select(-delete) %>% 
+   mutate( 
+        across(.col= c(time), as.integer)) %>% 
+  mutate(
+    weekday_v_weekend = 
+      case_when (day== "Monday" ~ "weekday", 
+                day=="Tuesday"~ "weekday", 
+                day== "Wednesday" ~ "weekday", 
+                day=="Thursday" ~ "weekday", 
+                day== "Friday" ~ "weekday",
+                day== "Saturday" ~ "weekend", 
+                day== "Sunday" ~ "weekend"), 
+    day= factor(day, levels= c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")))
+     
+
+accel_tidy %>% 
+  summarize(
+    n_obs= n()
+  )
+
+accel_tidy %>% 
+  dim()
+```
+
+Within the tidied data set the key variables are week, day_id, day, minutes, count and the weekday v weekend variable. The dimensions of the tidied set are 50400 rows by 6 columns. 
+
+Creating a table showing total activity for each day 
+
+
+
+
+
+
