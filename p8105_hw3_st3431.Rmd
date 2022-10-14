@@ -111,6 +111,72 @@ ny_noaa_tidy %>%
 
 The most commonly observed values for snowfall was 0 inches which makes sense because the months which it snows are often less than the months it does not snow (warmer months versus months cold enough to have snow) 
 
+Making a two-panel plot showing the average max temp in January and July across the years
+
+```{r}
+ny_noaa_tidy %>% 
+  select(id, year, month, month, day, tmax, tmin) %>% 
+  filter(month == "January" | month == "July") %>% 
+  group_by (month, year) %>% 
+  summarize(mean_tmax= mean(tmax, na.rm= TRUE)) %>% 
+  ggplot(aes(x=year, y=mean_tmax)) + 
+  geom_point() + 
+  geom_smooth(se=FALSE) +
+  facet_grid(~month) + 
+  labs(
+    title = "Average Maximum Temperature in January and July (1981-2010)", 
+    x= "Year", 
+    y= "Average Temperature (C)", 
+    caption= "Data from NOAA National Climate Center") +
+  scale_x_continuous(breaks= c(1981, 1990, 2000, 2010), 
+                     labels= c("1981", "1990", "2000", "2010")
+  )
+```
+
+Among this plot, there does not seem to be any identifiable structure to the average temperature in January or July. There are some outliers, especially in Jnauary where we see how around 2005 and 1990 the average temperature was higher than the other means. 
+
+Making a two panel plot showing tmin and tmax for the full dataset and a distribution of the snowfall
+
+(i) plot of tmin and tmax
+
+```{r}
+min_max_graph= 
+  ny_noaa_tidy %>% 
+  filter(!is.na(tmin), 
+         !is.na(tmax)) %>% 
+  ggplot(aes(x=tmin, y=tmax)) + 
+  geom_hex() + 
+  theme(legend.position = "bottom") +
+  labs(
+    title= "Minimum and Maximum Temperatures in New York (1981-2010)", 
+    x= "Minimum Temperature (C)",
+    y= "Maximum Temperature (C)",
+    caption= "Data from NOAA National Climate Center"
+  )
+
+min_max_graph
+  
+```
+
+(ii) plot of the distribution of the snowfall greater than 0 and less than 100 by year
+
+```{r}
+snowfall_graph= 
+  ny_noaa_tidy %>% 
+  filter(snow > 0, snow < 100) %>%
+  ggplot(aes(x = snow, color = factor(year))) +
+  geom_density(alpha=0.05) +
+  theme(legend.position = "bottom") +
+  labs( title= "Distribution of snowfall 0-100 mm (1981-2010)",
+    x = "Snowfall(mm)",
+    y = "Density",
+    caption= "Data from NOAA National Climate Center")
+
+snowfall_graph
+
+min_max_graph + snowfall_graph
+```
+
 
 
 
